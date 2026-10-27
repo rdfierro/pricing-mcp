@@ -75,7 +75,7 @@ There are two layers.
 
 - **Tools used**: did it call the tool the question needs?
 - **Verdict**: when the guardrail tool says `block`, does the answer say so instead of approving the price?
-- **Grounding**: every dollar figure, percentage and decimal in the answer must appear in a tool output or the question. Invented numbers fail the case.
+- **Grounding**: every dollar figure, percentage and decimal in the answer must appear in a tool output or the question, or be the result of a calculation the agent wrote out. The grader re-does that arithmetic and checks that its inputs came from tools. Invented numbers, and derived numbers with no work shown, fail the case.
 - **Must not say**: no claiming to have changed data through read-only tools, no inventing an elasticity for a SKU that doesn't exist.
 - **Multi-step**: asked to fix the ground-coffee ladder, the agent has to find a price for the 32 oz that is cheaper per ounce than the 24 oz but still inside the competitor band, and prove it by getting a `pass` from the guardrail tool.
 
@@ -87,7 +87,31 @@ python -m evals.agent_evals --case fix-ladder-multistep
 PRICING_EVAL_MODEL=claude-haiku-5-5 python -m evals.agent_evals   # compare models
 ```
 
-Each run writes a JSON report with full transcripts, pass rate, tool-call count and token usage to `evals/results/`. The graders have their own tests in [`tests/test_grading.py`](tests/test_grading.py).
+Each run writes a JSON report with full transcripts, pass rate, tool-call count and token usage to `evals/results/`. The held-out run below is saved in [`evals/reports/`](evals/reports) so you can read every transcript. The graders have their own tests in [`tests/test_grading.py`](tests/test_grading.py).
+
+### Results: Claude Sonnet 5.5, October 2026
+
+Held-out run: 10 cases × 3 attempts, graded by a grader frozen before the run.
+
+| | Result |
+| --- | --- |
+| Cases passed | **27 / 30 (90%)** |
+| Behavior checks (right tool, right verdict, no approving a blocked price, no claimed writes, no invented estimates) | **72 / 72** |
+| Number grounding | 27 / 30 |
+| Tool calls | 100 (about 3.3 per question) |
+| Tokens | 187k in, 28k out |
+
+The three misses were all grounding: a "26% below competitors" with no calculation shown, an example price ($5.49) offered unprompted, and a correct calculation written too far from its result for the grader to connect.
+
+### What the first live run taught me
+
+The first run scored **11 / 30**, and reading the transcripts showed most failures were the eval's fault, not the agent's:
+
+- **The grader graded the wrong call.** Asked about $4.99, the agent correctly reported it blocked, then helpfully tested $5.10 too. The grader checked the last guardrail call instead of the one for the price asked about.
+- **Correct arithmetic looked like hallucination.** The agent computed things like the price needed to hit the margin floor ($5.90 ÷ (1 − 0.52) = $12.29) and flagged them as its own math. A strict "must appear in tool output" rule failed them. Loosening the rule would have let real inventions through, so instead the agent is asked to show its work, and the grader re-checks it.
+- **Phrase checks were too literal.** "Isn't a known SKU" failed a check for the word "not", and "getting $10.49 approved would need a policy exception" tripped a check for "approved".
+
+After fixing those, the same transcripts re-graded at 19 / 30. The remaining failures were genuine: derived numbers with no work shown. A prompt change to show calculations, plus parser fixes for the ways the agent actually writes math, brought a fresh held-out run to 27 / 30. The lesson: when an eval score is low, read the transcripts before you touch the prompt.
 
 ## Design notes
 

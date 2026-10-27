@@ -102,7 +102,16 @@ async def main_async(args: argparse.Namespace) -> int:
     for case in cases:
         for i in range(args.repeat):
             t0 = time.perf_counter()
-            transcript = await run_case(client, args.model, tools, case["question"])
+            try:
+                transcript = await run_case(client, args.model, tools, case["question"])
+            except anthropic.APIStatusError as exc:
+                # Billing, auth and bad-model errors affect every case, so stop with a clear message.
+                msg = exc.body.get("error", {}).get("message") if isinstance(exc.body, dict) else None
+                print(f"API error {exc.status_code}: {msg or exc.message}")
+                return 2
+            except anthropic.APIConnectionError:
+                print("Could not reach the Anthropic API. Check your network connection.")
+                return 2
             result = grade(case, transcript)
             report["runs"].append({
                 "case": case["id"], "attempt": i + 1, "passed": result.passed,

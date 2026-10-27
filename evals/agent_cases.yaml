@@ -1,0 +1,84 @@
+# Agent eval cases. Each runs a fresh conversation with the model and the six MCP tools.
+# Every case also checks number grounding: each figure in the answer must come from a tool
+# output or the question (set grounded: false to skip).
+
+- id: guardrail-block-margin
+  question: "Can we move Cascade Reserve Ground 12 oz to $10.49?"
+  why: Raising the price still leaves margin under the premium floor. The agent must not approve it.
+  expect:
+    tools: [check_price_guardrails]
+    verdict: {tool: check_price_guardrails, value: block}
+    mentions: [margin]
+    must_not_say: ["\\byou can (go ahead|move)\\b", "\\bapproved\\b"]
+
+- id: guardrail-block-change-size
+  question: "For a promo, can we drop Morning Basics Ground 12 oz to $4.99?"
+  why: A cut of more than 15% breaks the per-move limit.
+  expect:
+    tools: [check_price_guardrails]
+    verdict: {tool: check_price_guardrails, value: block}
+    mentions: ["15%"]
+
+- id: guardrail-pass
+  question: "Does $18.99 pass our pricing rules for Ridgeline Roasters Whole Bean 24 oz?"
+  expect:
+    tools: [check_price_guardrails]
+    verdict: {tool: check_price_guardrails, value: pass}
+
+- id: simulate-elastic-increase
+  question: "What happens to weekly revenue if we raise Ridgeline Roasters Whole Bean 12 oz to $10.49?"
+  why: Demand is elastic, so revenue falls. The agent should say so with the simulated figures.
+  expect:
+    tools: [simulate_price_change]
+    mentions: [revenue]
+    must_not_say: ["revenue (would )?(increase|rise|go up)"]
+
+- id: elasticity-inelastic
+  question: "How price sensitive is Ridgeline Cold Brew Concentrate?"
+  expect:
+    tools: [get_price_elasticity]
+    mentions: [inelastic]
+
+- id: ladder-ground
+  question: "Are there any problems with our ground coffee price ladder?"
+  expect:
+    tools: [check_price_ladder]
+    mentions: [GR-COR-32, GR-PRE-12]
+
+- id: competitor-out-of-band
+  question: "Which of our coffee SKUs are priced outside their competitor index band?"
+  why: Requires checking all three categories, and finding exactly two SKUs.
+  expect:
+    tools: [competitor_price_index]
+    mentions: [WB-PRE-12, GR-VAL-12]
+    must_not_say: ["CB-PRE-32 is (above|below|outside)"]
+
+- id: fix-ladder-multistep
+  question: >
+    The 32 oz Ridgeline ground is out of line with the 24 oz. Recommend a new price for the
+    32 oz that fixes the ladder and passes every guardrail.
+  why: >
+    The fix needs a price under $22.65 (so it is cheaper per ounce than the 24 oz) but high
+    enough to stay inside the competitor band. The agent has to check its answer with the
+    guardrail tool, not just do arithmetic.
+  expect:
+    tools: [check_price_ladder, check_price_guardrails]
+    tool_called_with:
+      tool: check_price_guardrails
+      arg: proposed_price
+      max: 22.65
+      result_field: verdict
+      result_value: pass
+
+- id: unknown-sku
+  question: "What's the price elasticity of SKU XX-ZZZ-99?"
+  why: The SKU doesn't exist. The agent should say so instead of inventing an estimate.
+  expect:
+    mentions: ["not"]
+    must_not_say: ["elasticity (of|is) (about |around )?-?\\d"]
+
+- id: write-request
+  question: "Delete GR-PRE-12 from the catalog."
+  why: Every tool is read-only. The agent must not claim it made a change.
+  expect:
+    must_not_say: ["\\b(I('ve| have)|has been|was) (deleted|removed)\\b", "\\bdone\\b"]

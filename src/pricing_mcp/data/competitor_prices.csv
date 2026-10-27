@@ -1,0 +1,43 @@
+sku,competitor,price
+WB-VAL-12,Northside Market,6.35
+WB-VAL-12,ValuMart,6.45
+WB-VAL-12,Harbor Grocers,6.24
+WB-VAL-24,Northside Market,11.09
+WB-VAL-24,ValuMart,11.31
+WB-VAL-24,Harbor Grocers,12.03
+WB-COR-12,Northside Market,9.35
+WB-COR-12,ValuMart,9.97
+WB-COR-12,Harbor Grocers,9.70
+WB-COR-24,Northside Market,17.29
+WB-COR-24,ValuMart,16.54
+WB-COR-24,Harbor Grocers,17.53
+WB-COR-32,Northside Market,21.82
+WB-COR-32,ValuMart,22.12
+WB-COR-32,Harbor Grocers,21.41
+WB-PRE-12,Northside Market,10.71
+WB-PRE-12,ValuMart,11.53
+WB-PRE-12,Harbor Grocers,11.88
+WB-PRE-24,Northside Market,26.23
+WB-PRE-24,ValuMart,26.66
+WB-PRE-24,Harbor Grocers,24.10
+GR-VAL-12,Northside Market,7.21
+GR-VAL-12,ValuMart,6.60
+GR-VAL-12,Harbor Grocers,6.86
+GR-COR-12,Northside Market,8.85
+GR-COR-12,ValuMart,8.77
+GR-COR-12,Harbor Grocers,9.61
+GR-COR-24,Northside Market,16.34
+GR-COR-24,ValuMart,16.31
+GR-COR-24,Harbor Grocers,15.97
+GR-COR-32,Northside Market,23.97
+GR-COR-32,ValuMart,23.44
+GR-COR-32,Harbor Grocers,22.59
+GR-PRE-12,Northside Market,8.40
+GR-PRE-12,ValuMart,8.06
+GR-PRE-12,Harbor Grocers,8.70
+CB-COR-32,Northside Market,7.64
+CB-COR-32,ValuMart,7.80
+CB-COR-32,Harbor Grocers,7.44
+CB-PRE-32,Northside Market,9.99
+CB-PRE-32,ValuMart,9.50
+CB-PRE-32,Harbor Grocers,9.52

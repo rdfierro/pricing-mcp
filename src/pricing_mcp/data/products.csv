@@ -1,0 +1,15 @@
+sku,name,category,tier,size_oz,unit_cost,current_price
+WB-VAL-12,Morning Basics Whole Bean 12 oz,whole_bean,value,12,3.10,6.49
+WB-VAL-24,Morning Basics Whole Bean 24 oz,whole_bean,value,24,5.70,11.49
+WB-COR-12,Ridgeline Roasters Whole Bean 12 oz,whole_bean,core,12,4.20,9.99
+WB-COR-24,Ridgeline Roasters Whole Bean 24 oz,whole_bean,core,24,7.80,17.99
+WB-COR-32,Ridgeline Roasters Whole Bean 32 oz,whole_bean,core,32,10.10,22.99
+WB-PRE-12,Cascade Reserve Whole Bean 12 oz,whole_bean,premium,12,6.40,14.99
+WB-PRE-24,Cascade Reserve Whole Bean 24 oz,whole_bean,premium,24,11.90,27.99
+GR-VAL-12,Morning Basics Ground 12 oz,ground,value,12,2.90,5.99
+GR-COR-12,Ridgeline Roasters Ground 12 oz,ground,core,12,3.90,9.49
+GR-COR-24,Ridgeline Roasters Ground 24 oz,ground,core,24,7.20,16.99
+GR-COR-32,Ridgeline Roasters Ground 32 oz,ground,core,32,9.70,23.99
+GR-PRE-12,Cascade Reserve Ground 12 oz,ground,premium,12,5.90,9.29
+CB-COR-32,Ridgeline Cold Brew Concentrate 32 oz,cold_brew,core,32,3.60,7.99
+CB-PRE-32,Cascade Reserve Cold Brew 32 oz,cold_brew,premium,32,4.80,10.99

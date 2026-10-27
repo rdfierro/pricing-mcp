@@ -1,0 +1,41 @@
+{
+  "elasticity": {
+    "WB-VAL-12": -2.4,
+    "WB-VAL-24": -2.2,
+    "WB-COR-12": -1.8,
+    "WB-COR-24": -1.6,
+    "WB-COR-32": -1.5,
+    "WB-PRE-12": -1.1,
+    "WB-PRE-24": -1.0,
+    "GR-VAL-12": -2.6,
+    "GR-COR-12": -1.9,
+    "GR-COR-24": -1.7,
+    "GR-COR-32": -1.6,
+    "GR-PRE-12": -1.2,
+    "CB-COR-32": -0.9,
+    "CB-PRE-32": -0.8
+  },
+  "ladder_violations": [
+    {
+      "category": "ground",
+      "type": "size",
+      "skus": [
+        "GR-COR-24",
+        "GR-COR-32"
+      ]
+    },
+    {
+      "category": "ground",
+      "type": "tier",
+      "skus": [
+        "GR-COR-12",
+        "GR-PRE-12"
+      ]
+    }
+  ],
+  "seed": 20261027,
+  "competitor_out_of_band": {
+    "WB-PRE-12": "above band",
+    "GR-VAL-12": "below band"
+  }
+}

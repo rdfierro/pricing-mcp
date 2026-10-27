@@ -1,0 +1,25 @@
+{
+  "currency": "USD",
+  "min_margin_pct": {
+    "value": 0.4,
+    "core": 0.5,
+    "premium": 0.52
+  },
+  "max_price_change_pct": 0.15,
+  "competitor_index_band": {
+    "value": [
+      0.9,
+      1.05
+    ],
+    "core": [
+      0.95,
+      1.12
+    ],
+    "premium": [
+      1.0,
+      1.25
+    ]
+  },
+  "min_tier_gap_pct": 0.1,
+  "notes": "Margin is (price - unit_cost) / price. Competitor index is our price / median competitor price."
+}

@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pricing-mcp"
+version = "0.1.0"
+description = "An MCP server for retail pricing analytics, with an eval suite that checks agents get the numbers right."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Riley del Fierro" }]
+keywords = ["mcp", "model-context-protocol", "pricing", "ai-agents", "evals"]
+dependencies = ["mcp>=2.3,<3", "numpy>=1.26"]
+
+[project.optional-dependencies]
+evals = ["anthropic>=0.40", "pyyaml>=6"]
+dev = ["pytest>=8", "pyyaml>=6", "ruff>=0.6"]
+
+[project.scripts]
+pricing-mcp = "pricing_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pricing_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"

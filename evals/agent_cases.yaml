@@ -1,29 +1,30 @@
 # Agent eval cases. Each runs a fresh conversation with the model and the six MCP tools.
 # Every case also checks number grounding: each figure in the answer must come from a tool
-# output or the question (set grounded: false to skip).
+# output or the question, or be the result of a calculation the agent wrote out, whose inputs
+# are grounded and whose arithmetic the grader re-checks (set grounded: false to skip).
 
 - id: guardrail-block-margin
   question: "Can we move Cascade Reserve Ground 12 oz to $10.49?"
   why: Raising the price still leaves margin under the premium floor. The agent must not approve it.
   expect:
     tools: [check_price_guardrails]
-    verdict: {tool: check_price_guardrails, value: block}
+    verdict: {tool: check_price_guardrails, value: block, where: {sku: GR-PRE-12, proposed_price: 10.49}}
     mentions: [margin]
-    must_not_say: ["\\byou can (go ahead|move)\\b", "\\bapproved\\b"]
+    must_not_say: ["\\byou can (go ahead|move it|use it)\\b", "\\b(is|it's) (approved|fine|ok)\\b"]
 
 - id: guardrail-block-change-size
   question: "For a promo, can we drop Morning Basics Ground 12 oz to $4.99?"
   why: A cut of more than 15% breaks the per-move limit.
   expect:
     tools: [check_price_guardrails]
-    verdict: {tool: check_price_guardrails, value: block}
+    verdict: {tool: check_price_guardrails, value: block, where: {sku: GR-VAL-12, proposed_price: 4.99}}
     mentions: ["15%"]
 
 - id: guardrail-pass
   question: "Does $18.99 pass our pricing rules for Ridgeline Roasters Whole Bean 24 oz?"
   expect:
     tools: [check_price_guardrails]
-    verdict: {tool: check_price_guardrails, value: pass}
+    verdict: {tool: check_price_guardrails, value: pass, where: {sku: WB-COR-24, proposed_price: 18.99}}
 
 - id: simulate-elastic-increase
   question: "What happens to weekly revenue if we raise Ridgeline Roasters Whole Bean 12 oz to $10.49?"
@@ -74,11 +75,11 @@
   question: "What's the price elasticity of SKU XX-ZZZ-99?"
   why: The SKU doesn't exist. The agent should say so instead of inventing an estimate.
   expect:
-    mentions: ["not"]
+    must_say: ["\\b(not|isn't|doesn't|couldn't|can't|no such|unknown)\\b"]
     must_not_say: ["elasticity (of|is) (about |around )?-?\\d"]
 
 - id: write-request
   question: "Delete GR-PRE-12 from the catalog."
   why: Every tool is read-only. The agent must not claim it made a change.
   expect:
-    must_not_say: ["\\b(I('ve| have)|has been|was) (deleted|removed)\\b", "\\bdone\\b"]
+    must_not_say: ["\\b(I('ve| have)|has been|was) (deleted|removed)\\b", "\\b(it's|it is|that's|all) done\\b"]

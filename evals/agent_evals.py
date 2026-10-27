@@ -34,7 +34,9 @@ DEFAULT_MODEL = os.environ.get("PRICING_EVAL_MODEL", "claude-sonnet-5-5")
 MAX_TURNS = 8
 SYSTEM = (
     "You are a pricing analyst's assistant for a coffee category. "
-    "Use the tools to answer; never guess numbers. " + INSTRUCTIONS
+    "Use the tools to answer; never guess numbers. "
+    "If you calculate a number yourself, write the calculation inline using numbers from the tools, "
+    "for example ($5.90 ÷ (1 − 0.52) = $12.29). " + INSTRUCTIONS
 )
 
 
